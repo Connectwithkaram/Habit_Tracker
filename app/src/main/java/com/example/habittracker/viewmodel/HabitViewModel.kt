@@ -5,9 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.habittracker.data.AppDatabase
+import com.example.habittracker.data.HabitCompletionEntity
 import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.repository.HabitRepository
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class HabitViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: HabitRepository
@@ -18,6 +20,11 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
         repository = HabitRepository(habitDao)
         allHabits = repository.allHabits
     }
+
+    fun getHabitById(habitId: Long): LiveData<HabitEntity> = repository.getHabitById(habitId)
+
+    fun getCompletionsForHabit(habitId: Long): LiveData<List<HabitCompletionEntity>> =
+        repository.getCompletionsForHabit(habitId)
 
     fun insert(habit: HabitEntity) = viewModelScope.launch {
         repository.insert(habit)
@@ -34,11 +41,16 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
 
     fun markAsDone(habit: HabitEntity) = viewModelScope.launch {
         val today = System.currentTimeMillis()
+        val completion = HabitCompletionEntity(
+            habitId = habit.id,
+            completedDate = LocalDate.now().toEpochDay()
+        )
         val updatedHabit = habit.copy(
             lastDone = today,
             streak = habit.streak + 1,
             longestStreak = maxOf(habit.streak + 1, habit.longestStreak)
         )
+        repository.insertCompletion(completion)
         repository.update(updatedHabit)
     }
 }

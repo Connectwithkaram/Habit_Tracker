@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
+import com.example.habittracker.ui.HabitDetailActivity
 import com.example.habittracker.viewmodel.HabitViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +22,10 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = HabitAdapter(
             onDoneClick = { habit -> viewModel.markAsDone(habit) },
-            onToggleStatus = { habit -> viewModel.toggleStatus(habit) }
+            onToggleStatus = { habit -> viewModel.toggleStatus(habit) },
+            onHabitClick = { habit ->
+                startActivity(HabitDetailActivity.newIntent(this, habit.id))
+            }
         )
 
         binding.recyclerView.apply {

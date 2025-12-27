@@ -12,7 +12,8 @@ import java.util.*
 
 class HabitAdapter(
     private val onDoneClick: (HabitEntity) -> Unit,
-    private val onToggleStatus: (HabitEntity) -> Unit
+    private val onToggleStatus: (HabitEntity) -> Unit,
+    private val onHabitClick: (HabitEntity) -> Unit
 ) : ListAdapter<HabitEntity, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
@@ -36,6 +37,7 @@ class HabitAdapter(
             binding.habitStatus.text = if (habit.isActive) "Status: Active" else "Status: Paused"
             
             binding.btnDone.setOnClickListener { onDoneClick(habit) }
+            binding.root.setOnClickListener { onHabitClick(habit) }
             binding.root.setOnLongClickListener {
                 onToggleStatus(habit)
                 true
