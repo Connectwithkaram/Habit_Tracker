@@ -3,12 +3,10 @@ package com.example.habittracker
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
-import com.example.habittracker.ui.HabitDetailActivity
-import com.example.habittracker.ui.HabitFormBottomSheet
 import com.example.habittracker.viewmodel.HabitViewModel
 import java.time.Instant
 
@@ -23,14 +21,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val adapter = HabitAdapter(
-            onDoneClick = { item -> viewModel.markAsDone(item.habit) },
-            onToggleStatus = { item -> viewModel.toggleStatus(item.habit) }
             onDoneClick = { habit -> viewModel.markAsDone(habit) },
-            onToggleStatus = { habit -> viewModel.toggleStatus(habit) },
-            onHabitClick = { habit ->
-                startActivity(HabitDetailActivity.newIntent(this, habit.id))
-            }
-            onEditClick = { habit -> showHabitForm(habit) }
+            onToggleStatus = { habit -> viewModel.toggleStatus(habit) }
         )
 
         binding.recyclerView.apply {
@@ -42,40 +34,12 @@ class MainActivity : AppCompatActivity() {
             if (habits.isEmpty()) {
                 insertSampleData()
             }
-        }
-
-        viewModel.filteredHabits.observe(this) { habits ->
             adapter.submitList(habits)
         }
 
-        binding.searchInput.doAfterTextChanged { text ->
-            viewModel.updateSearchQuery(text?.toString().orEmpty())
-        }
-
-        binding.filterChipGroup.setOnCheckedChangeListener { _, checkedId ->
-            val filter = when (checkedId) {
-                binding.chipActive.id -> HabitStatusFilter.ACTIVE
-                binding.chipPaused.id -> HabitStatusFilter.PAUSED
-                else -> HabitStatusFilter.ALL
-            }
-            viewModel.updateStatusFilter(filter)
-        }
-
         binding.fab.setOnClickListener {
-            showHabitForm(null)
+            // Future: Show Add Habit Dialog
         }
-    }
-
-    private fun showHabitForm(habit: HabitEntity?) {
-        val sheet = HabitFormBottomSheet.newInstance(habit)
-        sheet.onSave = { savedHabit ->
-            if (habit == null) {
-                viewModel.insert(savedHabit)
-            } else {
-                viewModel.update(savedHabit)
-            }
-        }
-        sheet.show(supportFragmentManager, "HabitForm")
     }
 
     private fun insertSampleData() {

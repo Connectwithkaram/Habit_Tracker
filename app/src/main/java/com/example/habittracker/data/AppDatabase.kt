@@ -8,15 +8,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-
-@Database(entities = [HabitEntity::class, HabitCompletionEntity::class], version = 2, exportSchema = false)
-@TypeConverters(Converters::class)
-import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 @Database(entities = [HabitEntity::class, HabitCompletionEntity::class], version = 2, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -37,12 +35,7 @@ abstract class AppDatabase : RoomDatabase() {
                     """.trimIndent()
                 )
                 database.execSQL("CREATE INDEX IF NOT EXISTS index_habit_completions_habitId ON habit_completions(habitId)")
-                database.execSQL(
-                    """
-                    INSERT INTO habit_completions (habitId, completedAt)
-                    SELECT id, lastDone FROM habits WHERE lastDone IS NOT NULL
-                    """.trimIndent()
-                )
+                
                 database.execSQL(
                     """
                     CREATE TABLE IF NOT EXISTS habits_new (
@@ -71,36 +64,32 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                var instance: AppDatabase? = null
                 val roomCallback = object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        val preferences = context.getSharedPreferences(
-                            SAMPLE_PREFS,
-                            Context.MODE_PRIVATE
-                        )
+                        val preferences = context.getSharedPreferences(SAMPLE_PREFS, Context.MODE_PRIVATE)
                         if (!preferences.getBoolean(SAMPLE_DATA_INSERTED, false)) {
                             CoroutineScope(Dispatchers.IO).launch {
-                                instance?.let { database ->
+                                INSTANCE?.let { database ->
                                     insertSampleData(database, preferences)
                                 }
                             }
                         }
                     }
                 }
-                val built = Room.databaseBuilder(
+
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "habit_database"
-                ).addMigrations(MIGRATION_1_2)
-                    .build()
-                ).fallbackToDestructiveMigration().build()
+                )
+                .addMigrations(MIGRATION_1_2)
+                .addCallback(roomCallback)
+                .fallbackToDestructiveMigration()
+                .build()
+                
                 INSTANCE = instance
                 instance
-                ).addCallback(roomCallback).build()
-                instance = built
-                INSTANCE = built
-                built
             }
         }
 
@@ -114,8 +103,7 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "2 liters a day",
                     frequencyPerWeek = 7,
                     isActive = true,
-                    lastDone = null,
-                    createdAt = System.currentTimeMillis(),
+                    createdAt = Instant.now(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Health"
@@ -125,8 +113,7 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "At least 10 pages",
                     frequencyPerWeek = 5,
                     isActive = true,
-                    lastDone = null,
-                    createdAt = System.currentTimeMillis(),
+                    createdAt = Instant.now(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Education"
@@ -136,8 +123,7 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "Weight training",
                     frequencyPerWeek = 3,
                     isActive = false,
-                    lastDone = null,
-                    createdAt = System.currentTimeMillis(),
+                    createdAt = Instant.now(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Health"

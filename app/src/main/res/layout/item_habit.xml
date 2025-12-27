@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="1dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,19 +18,10 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/streakBadge"
+            app:layout_constraintEnd_toStartOf="@+id/btnDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:text="Habit Name" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/streakBadge"
-            style="@style/Widget.Material3.Chip.Assist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔥 7-day streak"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/habitDetails"
@@ -38,54 +29,24 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/habitName"
             android:text="3 times a week • Last done: Yesterday" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/habitChips"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:textSize="12sp"
-            android:layout_marginTop="12dp"
-            app:singleLine="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/habitDetails"
-            app:layout_constraintEnd_toStartOf="@+id/habitProgress">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/habitCategory"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Health" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/habitStatus"
-                style="@style/Widget.Material3.Chip.Assist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Active" />
-        </com.google.android.material.chip.ChipGroup>
-
         <TextView
-            android:id="@+id/habitProgress"
+            android:id="@+id/habitStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="3/5 weekly"
-            android:textAppearance="?attr/textAppearanceLabelMedium"
-            app:layout_constraintBaseline_toBaselineOf="@id/habitChips"
-            app:layout_constraintEnd_toStartOf="@+id/btnDone"
-            app:layout_constraintStart_toEndOf="@id/habitChips" />
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/habitDetails"
+            android:text="Active" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDone"
-            style="@style/Widget.Material3.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Done"
