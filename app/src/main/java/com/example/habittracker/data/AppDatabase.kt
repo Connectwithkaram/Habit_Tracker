@@ -5,16 +5,13 @@ import android.content.SharedPreferences
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.Instant
 
 @Database(entities = [HabitEntity::class, HabitCompletionEntity::class], version = 2, exportSchema = false)
-@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -30,6 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         habitId INTEGER NOT NULL,
                         completedAt INTEGER NOT NULL,
+                        completedDate INTEGER NOT NULL,
                         FOREIGN KEY(habitId) REFERENCES habits(id) ON DELETE CASCADE
                     )
                     """.trimIndent()
@@ -44,6 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
                         description TEXT NOT NULL,
                         frequencyPerWeek INTEGER NOT NULL,
                         isActive INTEGER NOT NULL,
+                        lastDone INTEGER,
                         createdAt INTEGER NOT NULL,
                         streak INTEGER NOT NULL,
                         longestStreak INTEGER NOT NULL,
@@ -53,8 +52,8 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 database.execSQL(
                     """
-                    INSERT INTO habits_new (id, name, description, frequencyPerWeek, isActive, createdAt, streak, longestStreak, category)
-                    SELECT id, name, description, frequencyPerWeek, isActive, createdAt, streak, longestStreak, category FROM habits
+                    INSERT INTO habits_new (id, name, description, frequencyPerWeek, isActive, lastDone, createdAt, streak, longestStreak, category)
+                    SELECT id, name, description, frequencyPerWeek, isActive, lastDone, createdAt, streak, longestStreak, category FROM habits
                     """.trimIndent()
                 )
                 database.execSQL("DROP TABLE habits")
@@ -103,7 +102,8 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "2 liters a day",
                     frequencyPerWeek = 7,
                     isActive = true,
-                    createdAt = Instant.now(),
+                    lastDone = null,
+                    createdAt = System.currentTimeMillis(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Health"
@@ -113,7 +113,8 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "At least 10 pages",
                     frequencyPerWeek = 5,
                     isActive = true,
-                    createdAt = Instant.now(),
+                    lastDone = null,
+                    createdAt = System.currentTimeMillis(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Education"
@@ -123,7 +124,8 @@ abstract class AppDatabase : RoomDatabase() {
                     description = "Weight training",
                     frequencyPerWeek = 3,
                     isActive = false,
-                    createdAt = Instant.now(),
+                    lastDone = null,
+                    createdAt = System.currentTimeMillis(),
                     streak = 0,
                     longestStreak = 0,
                     category = "Health"
