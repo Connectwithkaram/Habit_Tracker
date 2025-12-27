@@ -9,15 +9,13 @@ import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.repository.HabitRepository
 import kotlinx.coroutines.launch
 
-class HabitViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: HabitRepository
-    val allHabits: LiveData<List<HabitEntity>>
-
-    init {
-        val habitDao = AppDatabase.getDatabase(application).habitDao()
-        repository = HabitRepository(habitDao)
-        allHabits = repository.allHabits
-    }
+class HabitViewModel(
+    application: Application,
+    private val repository: HabitRepository =
+        HabitRepository(AppDatabase.getDatabase(application).habitDao()),
+    private val timeProvider: () -> Long = System::currentTimeMillis
+) : AndroidViewModel(application) {
+    val allHabits: LiveData<List<HabitEntity>> = repository.allHabits
 
     fun insert(habit: HabitEntity) = viewModelScope.launch {
         repository.insert(habit)
@@ -33,7 +31,7 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun markAsDone(habit: HabitEntity) = viewModelScope.launch {
-        val today = System.currentTimeMillis()
+        val today = timeProvider()
         val updatedHabit = habit.copy(
             lastDone = today,
             streak = habit.streak + 1,
