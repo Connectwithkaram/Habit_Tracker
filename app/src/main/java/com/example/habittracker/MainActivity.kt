@@ -3,6 +3,7 @@ package com.example.habittracker
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
@@ -38,7 +39,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.allHabits.observe(this) { habits ->
+            if (habits.isEmpty()) {
+                insertSampleData()
+            }
+        }
+
+        viewModel.filteredHabits.observe(this) { habits ->
             adapter.submitList(habits)
+        }
+
+        binding.searchInput.doAfterTextChanged { text ->
+            viewModel.updateSearchQuery(text?.toString().orEmpty())
+        }
+
+        binding.filterChipGroup.setOnCheckedChangeListener { _, checkedId ->
+            val filter = when (checkedId) {
+                binding.chipActive.id -> HabitStatusFilter.ACTIVE
+                binding.chipPaused.id -> HabitStatusFilter.PAUSED
+                else -> HabitStatusFilter.ALL
+            }
+            viewModel.updateStatusFilter(filter)
         }
 
         binding.fab.setOnClickListener {

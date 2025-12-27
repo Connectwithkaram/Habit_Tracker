@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Habit Tracker</string>
     <string name="add_habit">Add Habit</string>
+    <string name="search">Search habits</string>
+    <string name="all">All</string>
+    <string name="active">Active</string>
+    <string name="paused">Paused</string>
     <string name="streak_label">Current streak</string>
     <string name="longest_streak_label">Longest streak</string>
     <string name="last_done_label">Last done</string>

@@ -10,6 +10,13 @@ class HabitRepository(private val habitDao: HabitDao) {
     val allHabits: LiveData<List<HabitWithLastCompletion>> = habitDao.getHabitsWithLastCompletion()
     val activeHabits: LiveData<List<HabitEntity>> = habitDao.getActiveHabits()
 
+    fun getHabitsByName(query: String): LiveData<List<HabitEntity>> {
+        return habitDao.getHabitsByName(query)
+    }
+
+    fun getHabitsFiltered(query: String, isActive: Boolean?): LiveData<List<HabitEntity>> {
+        return habitDao.getHabitsFiltered(query, isActive)
+    }
     fun getHabitById(habitId: Long): LiveData<HabitEntity> = habitDao.getHabitById(habitId)
 
     fun getCompletionsForHabit(habitId: Long): LiveData<List<HabitCompletionEntity>> =
