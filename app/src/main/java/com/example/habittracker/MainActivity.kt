@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
 import com.example.habittracker.ui.HabitFormBottomSheet
@@ -32,9 +31,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.allHabits.observe(this) { habits ->
-            if (habits.isEmpty()) {
-                insertSampleData()
-            }
             adapter.submitList(habits)
         }
 
