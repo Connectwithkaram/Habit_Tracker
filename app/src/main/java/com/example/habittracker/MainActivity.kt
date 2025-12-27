@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
+import com.example.habittracker.ui.HabitFormBottomSheet
 import com.example.habittracker.viewmodel.HabitViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +22,8 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = HabitAdapter(
             onDoneClick = { habit -> viewModel.markAsDone(habit) },
-            onToggleStatus = { habit -> viewModel.toggleStatus(habit) }
+            onToggleStatus = { habit -> viewModel.toggleStatus(habit) },
+            onEditClick = { habit -> showHabitForm(habit) }
         )
 
         binding.recyclerView.apply {
@@ -37,8 +39,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.fab.setOnClickListener {
-            // Future: Show Add Habit Dialog
+            showHabitForm(null)
         }
+    }
+
+    private fun showHabitForm(habit: HabitEntity?) {
+        val sheet = HabitFormBottomSheet.newInstance(habit)
+        sheet.onSave = { savedHabit ->
+            if (habit == null) {
+                viewModel.insert(savedHabit)
+            } else {
+                viewModel.update(savedHabit)
+            }
+        }
+        sheet.show(supportFragmentManager, "HabitForm")
     }
 
     private fun insertSampleData() {
