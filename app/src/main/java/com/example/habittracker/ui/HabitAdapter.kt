@@ -13,6 +13,7 @@ import java.util.*
 class HabitAdapter(
     private val onDoneClick: (HabitEntity) -> Unit,
     private val onToggleStatus: (HabitEntity) -> Unit,
+    private val onHabitClick: (HabitEntity) -> Unit
     private val onEditClick: (HabitEntity) -> Unit
 ) : ListAdapter<HabitEntity, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
 
@@ -37,6 +38,7 @@ class HabitAdapter(
             binding.habitStatus.text = if (habit.isActive) "Status: Active" else "Status: Paused"
             
             binding.btnDone.setOnClickListener { onDoneClick(habit) }
+            binding.root.setOnClickListener { onHabitClick(habit) }
             binding.habitStatus.setOnClickListener { onToggleStatus(habit) }
             binding.root.setOnLongClickListener {
                 onEditClick(habit)

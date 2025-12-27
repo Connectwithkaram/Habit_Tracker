@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [HabitEntity::class], version = 1, exportSchema = false)
+@Database(entities = [HabitEntity::class, HabitCompletionEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
 
@@ -41,6 +41,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "habit_database"
+                ).fallbackToDestructiveMigration().build()
+                INSTANCE = instance
+                instance
                 ).addCallback(roomCallback).build()
                 instance = built
                 INSTANCE = built
