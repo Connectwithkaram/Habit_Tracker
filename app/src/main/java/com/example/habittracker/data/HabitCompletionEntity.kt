@@ -5,8 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.time.Instant
-
 @Entity(
     tableName = "habit_completions",
     foreignKeys = [
@@ -22,7 +20,6 @@ import java.time.Instant
 data class HabitCompletionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "habitId") val habitId: Long,
-    val completedAt: Instant
-    val habitId: Long,
+    val completedAt: Long,
     val completedDate: Long
 )

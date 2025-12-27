@@ -48,7 +48,4 @@ interface HabitDao {
 
     @Delete
     suspend fun deleteHabit(habit: HabitEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCompletion(completion: HabitCompletionEntity)
 }
