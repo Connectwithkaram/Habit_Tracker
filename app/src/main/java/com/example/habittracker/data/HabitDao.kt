@@ -11,6 +11,17 @@ interface HabitDao {
     @Query("SELECT * FROM habits WHERE isActive = 1")
     fun getActiveHabits(): LiveData<List<HabitEntity>>
 
+    @Query("SELECT * FROM habits WHERE name LIKE :query ORDER BY createdAt DESC")
+    fun getHabitsByName(query: String): LiveData<List<HabitEntity>>
+
+    @Query(
+        "SELECT * FROM habits " +
+            "WHERE name LIKE :query " +
+            "AND (:isActive IS NULL OR isActive = :isActive) " +
+            "ORDER BY createdAt DESC"
+    )
+    fun getHabitsFiltered(query: String, isActive: Boolean?): LiveData<List<HabitEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabit(habit: HabitEntity)
 
