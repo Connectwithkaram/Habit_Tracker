@@ -13,4 +13,13 @@
     <string name="never_done">Never done</string>
     <string name="completion_day_done">%1$s marked done</string>
     <string name="completion_day_missed">%1$s not completed</string>
+    <string name="habit_name_label">Habit name</string>
+    <string name="habit_description_label">Description</string>
+    <string name="habit_frequency_label">Times per week (1-7)</string>
+    <string name="habit_category_label">Category</string>
+    <string name="habit_active_label">Active</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_frequency_range">Frequency must be between 1 and 7</string>
 </resources>

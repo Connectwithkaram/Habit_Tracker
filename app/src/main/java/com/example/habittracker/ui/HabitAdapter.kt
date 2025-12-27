@@ -14,6 +14,7 @@ class HabitAdapter(
     private val onDoneClick: (HabitEntity) -> Unit,
     private val onToggleStatus: (HabitEntity) -> Unit,
     private val onHabitClick: (HabitEntity) -> Unit
+    private val onEditClick: (HabitEntity) -> Unit
 ) : ListAdapter<HabitEntity, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
@@ -38,8 +39,9 @@ class HabitAdapter(
             
             binding.btnDone.setOnClickListener { onDoneClick(habit) }
             binding.root.setOnClickListener { onHabitClick(habit) }
+            binding.habitStatus.setOnClickListener { onToggleStatus(habit) }
             binding.root.setOnLongClickListener {
-                onToggleStatus(habit)
+                onEditClick(habit)
                 true
             }
         }

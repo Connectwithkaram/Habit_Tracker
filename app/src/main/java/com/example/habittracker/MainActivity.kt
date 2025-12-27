@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.habittracker.data.HabitEntity
 import com.example.habittracker.databinding.ActivityMainBinding
 import com.example.habittracker.ui.HabitAdapter
 import com.example.habittracker.ui.HabitDetailActivity
+import com.example.habittracker.ui.HabitFormBottomSheet
 import com.example.habittracker.viewmodel.HabitViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             onHabitClick = { habit ->
                 startActivity(HabitDetailActivity.newIntent(this, habit.id))
             }
+            onEditClick = { habit -> showHabitForm(habit) }
         )
 
         binding.recyclerView.apply {
@@ -34,15 +35,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.allHabits.observe(this) { habits ->
-            if (habits.isEmpty()) {
-                insertSampleData()
-            }
             adapter.submitList(habits)
         }
 
         binding.fab.setOnClickListener {
-            // Future: Show Add Habit Dialog
+            showHabitForm(null)
         }
+    }
+
+    private fun showHabitForm(habit: HabitEntity?) {
+        val sheet = HabitFormBottomSheet.newInstance(habit)
+        sheet.onSave = { savedHabit ->
+            if (habit == null) {
+                viewModel.insert(savedHabit)
+            } else {
+                viewModel.update(savedHabit)
+            }
+        }
+        sheet.show(supportFragmentManager, "HabitForm")
     }
 
     private fun insertSampleData() {
