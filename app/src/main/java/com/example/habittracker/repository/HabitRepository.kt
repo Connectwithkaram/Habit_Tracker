@@ -8,8 +8,8 @@ class HabitRepository(private val habitDao: HabitDao) {
     val allHabits: LiveData<List<HabitEntity>> = habitDao.getAllHabits()
     val activeHabits: LiveData<List<HabitEntity>> = habitDao.getActiveHabits()
 
-    suspend fun insert(habit: HabitEntity) {
-        habitDao.insertHabit(habit)
+    suspend fun insert(habit: HabitEntity): Long {
+        return habitDao.insertHabit(habit)
     }
 
     suspend fun update(habit: HabitEntity) {
