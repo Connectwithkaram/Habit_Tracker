@@ -23,4 +23,6 @@ data class HabitCompletionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "habitId") val habitId: Long,
     val completedAt: Instant
+    val habitId: Long,
+    val completedDate: Long
 )

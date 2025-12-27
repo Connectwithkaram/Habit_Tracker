@@ -21,6 +21,11 @@ interface HabitDao {
         """
     )
     fun getHabitsWithLastCompletion(): LiveData<List<HabitWithLastCompletion>>
+    @Query("SELECT * FROM habits WHERE id = :habitId")
+    fun getHabitById(habitId: Long): LiveData<HabitEntity>
+
+    @Query("SELECT * FROM habit_completions WHERE habitId = :habitId ORDER BY completedDate DESC")
+    fun getCompletionsForHabit(habitId: Long): LiveData<List<HabitCompletionEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabit(habit: HabitEntity)
@@ -33,4 +38,7 @@ interface HabitDao {
 
     @Delete
     suspend fun deleteHabit(habit: HabitEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCompletion(completion: HabitCompletionEntity)
 }

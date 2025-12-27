@@ -10,6 +10,11 @@ class HabitRepository(private val habitDao: HabitDao) {
     val allHabits: LiveData<List<HabitWithLastCompletion>> = habitDao.getHabitsWithLastCompletion()
     val activeHabits: LiveData<List<HabitEntity>> = habitDao.getActiveHabits()
 
+    fun getHabitById(habitId: Long): LiveData<HabitEntity> = habitDao.getHabitById(habitId)
+
+    fun getCompletionsForHabit(habitId: Long): LiveData<List<HabitCompletionEntity>> =
+        habitDao.getCompletionsForHabit(habitId)
+
     suspend fun insert(habit: HabitEntity) {
         habitDao.insertHabit(habit)
     }
@@ -24,5 +29,9 @@ class HabitRepository(private val habitDao: HabitDao) {
 
     suspend fun delete(habit: HabitEntity) {
         habitDao.deleteHabit(habit)
+    }
+
+    suspend fun insertCompletion(completion: HabitCompletionEntity) {
+        habitDao.insertCompletion(completion)
     }
 }

@@ -15,6 +15,11 @@ class HabitAdapter(
     private val onDoneClick: (HabitWithLastCompletion) -> Unit,
     private val onToggleStatus: (HabitWithLastCompletion) -> Unit
 ) : ListAdapter<HabitWithLastCompletion, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
+    private val onDoneClick: (HabitEntity) -> Unit,
+    private val onToggleStatus: (HabitEntity) -> Unit,
+    private val onHabitClick: (HabitEntity) -> Unit
+    private val onEditClick: (HabitEntity) -> Unit
+) : ListAdapter<HabitEntity, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val binding = ItemHabitBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -41,6 +46,12 @@ class HabitAdapter(
             binding.btnDone.setOnClickListener { onDoneClick(item) }
             binding.root.setOnLongClickListener {
                 onToggleStatus(item)
+            
+            binding.btnDone.setOnClickListener { onDoneClick(habit) }
+            binding.root.setOnClickListener { onHabitClick(habit) }
+            binding.habitStatus.setOnClickListener { onToggleStatus(habit) }
+            binding.root.setOnLongClickListener {
+                onEditClick(habit)
                 true
             }
         }

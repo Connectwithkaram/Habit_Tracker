@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">Habit Tracker</string>
     <string name="add_habit">Add Habit</string>
+    <string name="streak_label">Current streak</string>
+    <string name="longest_streak_label">Longest streak</string>
+    <string name="last_done_label">Last done</string>
+    <string name="frequency_target_label">Frequency target</string>
+    <string name="frequency_target_value">%1$d times per week</string>
+    <string name="mark_done">Mark done</string>
+    <string name="completion_history_label">Completion history</string>
+    <string name="completion_count_default">0 completions logged</string>
+    <string name="completion_count_value">%1$d completions logged</string>
+    <string name="never_done">Never done</string>
+    <string name="completion_day_done">%1$s marked done</string>
+    <string name="completion_day_missed">%1$s not completed</string>
+    <string name="habit_name_label">Habit name</string>
+    <string name="habit_description_label">Description</string>
+    <string name="habit_frequency_label">Times per week (1-7)</string>
+    <string name="habit_category_label">Category</string>
+    <string name="habit_active_label">Active</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_frequency_range">Frequency must be between 1 and 7</string>
 </resources>
