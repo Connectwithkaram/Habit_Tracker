@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.habittracker.data.AppDatabase
 import com.example.habittracker.data.HabitEntity
+import com.example.habittracker.notifications.ReminderScheduler
 import com.example.habittracker.repository.HabitRepository
 import kotlinx.coroutines.launch
 
@@ -20,16 +21,20 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun insert(habit: HabitEntity) = viewModelScope.launch {
-        repository.insert(habit)
+        val habitId = repository.insert(habit)
+        val savedHabit = habit.copy(id = habitId)
+        ReminderScheduler.scheduleOrCancel(getApplication(), savedHabit)
     }
 
     fun update(habit: HabitEntity) = viewModelScope.launch {
         repository.update(habit)
+        ReminderScheduler.scheduleOrCancel(getApplication(), habit)
     }
     
     fun toggleStatus(habit: HabitEntity) = viewModelScope.launch {
         val updatedHabit = habit.copy(isActive = !habit.isActive)
         repository.update(updatedHabit)
+        ReminderScheduler.scheduleOrCancel(getApplication(), updatedHabit)
     }
 
     fun markAsDone(habit: HabitEntity) = viewModelScope.launch {
@@ -40,5 +45,6 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
             longestStreak = maxOf(habit.streak + 1, habit.longestStreak)
         )
         repository.update(updatedHabit)
+        ReminderScheduler.scheduleOrCancel(getApplication(), updatedHabit)
     }
 }
