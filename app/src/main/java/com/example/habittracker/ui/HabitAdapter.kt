@@ -5,14 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.habittracker.data.HabitEntity
+import com.example.habittracker.data.HabitWithLastCompletion
 import com.example.habittracker.databinding.ItemHabitBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class HabitAdapter(
+    private val onDoneClick: (HabitWithLastCompletion) -> Unit,
+    private val onToggleStatus: (HabitWithLastCompletion) -> Unit
+) : ListAdapter<HabitWithLastCompletion, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
     private val onDoneClick: (HabitEntity) -> Unit,
-    private val onToggleStatus: (HabitEntity) -> Unit
+    private val onToggleStatus: (HabitEntity) -> Unit,
+    private val onHabitClick: (HabitEntity) -> Unit
+    private val onEditClick: (HabitEntity) -> Unit
 ) : ListAdapter<HabitEntity, HabitAdapter.HabitViewHolder>(HabitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
@@ -25,26 +31,39 @@ class HabitAdapter(
     }
 
     inner class HabitViewHolder(private val binding: ItemHabitBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(habit: HabitEntity) {
+        fun bind(item: HabitWithLastCompletion) {
+            val habit = item.habit
             binding.habitName.text = habit.name
-            val lastDoneStr = habit.lastDone?.let {
-                val sdf = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
-                "Last done: ${sdf.format(Date(it))}"
+            val lastDoneStr = item.lastCompletedAt?.let {
+                val formatter = DateTimeFormatter.ofPattern("MMM dd, HH:mm")
+                val localDateTime = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
+                "Last done: ${formatter.format(localDateTime)}"
             } ?: "Never done"
-            
+
             binding.habitDetails.text = "${habit.frequencyPerWeek} times a week • $lastDoneStr"
             binding.habitStatus.text = if (habit.isActive) "Status: Active" else "Status: Paused"
+
+            binding.btnDone.setOnClickListener { onDoneClick(item) }
+            binding.root.setOnLongClickListener {
+                onToggleStatus(item)
             
             binding.btnDone.setOnClickListener { onDoneClick(habit) }
+            binding.root.setOnClickListener { onHabitClick(habit) }
+            binding.habitStatus.setOnClickListener { onToggleStatus(habit) }
             binding.root.setOnLongClickListener {
-                onToggleStatus(habit)
+                onEditClick(habit)
                 true
             }
         }
     }
 
-    class HabitDiffCallback : DiffUtil.ItemCallback<HabitEntity>() {
-        override fun areItemsTheSame(oldItem: HabitEntity, newItem: HabitEntity): Boolean = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: HabitEntity, newItem: HabitEntity): Boolean = oldItem == newItem
+    class HabitDiffCallback : DiffUtil.ItemCallback<HabitWithLastCompletion>() {
+        override fun areItemsTheSame(oldItem: HabitWithLastCompletion, newItem: HabitWithLastCompletion): Boolean {
+            return oldItem.habit.id == newItem.habit.id
+        }
+
+        override fun areContentsTheSame(oldItem: HabitWithLastCompletion, newItem: HabitWithLastCompletion): Boolean {
+            return oldItem == newItem
+        }
     }
 }

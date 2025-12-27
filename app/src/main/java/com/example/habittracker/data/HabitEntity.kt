@@ -2,7 +2,7 @@ package com.example.habittracker.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
+import java.time.Instant
 
 @Entity(tableName = "habits")
 data class HabitEntity(
@@ -11,8 +11,7 @@ data class HabitEntity(
     val description: String,
     val frequencyPerWeek: Int,
     val isActive: Boolean,
-    val lastDone: Long?, // Timestamp
-    val createdAt: Long, // Timestamp
+    val createdAt: Instant,
     val streak: Int,
     val longestStreak: Int,
     val category: String
