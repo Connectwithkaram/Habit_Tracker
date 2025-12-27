@@ -1,9 +1,11 @@
 package com.example.habittracker.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.time.Instant
 
 @Entity(
     tableName = "habit_completions",
@@ -19,6 +21,8 @@ import androidx.room.PrimaryKey
 )
 data class HabitCompletionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "habitId") val habitId: Long,
+    val completedAt: Instant
     val habitId: Long,
     val completedDate: Long
 )
